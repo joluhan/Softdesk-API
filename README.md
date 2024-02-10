@@ -20,10 +20,12 @@ The SoftDesk Support API is a RESTful service designed for SoftDesk, a collabora
 
 ## Setup Instructions
 1. Clone the repository:
-   ```git clone https://github.com/joluhan/Softdesk-API.git
+   ```
+   git clone https://github.com/joluhan/Softdesk-API.git
    ```
 2. Navigate to the project directory:
-   ```cd softdesk-support-api
+   ```
+   cd softdesk-support-api
    ```
 3. Setup and activate the virtual environment:
    ```
