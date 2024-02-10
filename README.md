@@ -25,7 +25,7 @@ The SoftDesk Support API is a RESTful service designed for SoftDesk, a collabora
    ```
 2. Navigate to the project directory:
    ```
-   cd softdesk-support-api
+   cd Softdesk-API/
    ```
 3. Setup and activate the virtual environment:
    ```
