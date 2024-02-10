@@ -23,9 +23,9 @@ This API facilitates issue tracking and project management for B2B interactions,
 ## Setup Instructions
 
 1. **Clone the repository:**
-   ```
-   https://github.com/joluhan/Softdesk-API.git
-   ```
+```
+https://github.com/joluhan/Softdesk-API.git
+```
 
 2. **Navigate to the project directory:**
    ```
