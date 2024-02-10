@@ -1,12 +1,10 @@
-```markdown
 # SoftDesk Support API
 
 [Setup Instructions](#setup-instructions)
 [Testing Instructions](#testing-instructions-for-softdesk-support-api)
 
 ## Introduction
-The SoftDesk Support API is a RESTful service designed for SoftDesk, a collaborative software development company. 
-This API facilitates issue tracking and project management for B2B interactions, ensuring efficient and secure technical support solutions.
+The SoftDesk Support API is a RESTful service designed for SoftDesk, a collaborative software development company. This API facilitates issue tracking and project management for B2B interactions, ensuring efficient and secure technical support solutions.
 
 ## Features
 - User management with privacy and consent options.
@@ -21,31 +19,26 @@ This API facilitates issue tracking and project management for B2B interactions,
 - Other dependencies as outlined in `requirements.txt`
 
 ## Setup Instructions
-
-1. **Clone the repository:**
-```
-https://github.com/joluhan/Softdesk-API.git
-```
-
-2. **Navigate to the project directory:**
+1. Clone the repository:
+   ```git clone https://github.com/joluhan/Softdesk-API.git
    ```
-   cd softdesk-support-api
+2. Navigate to the project directory:
+   ```cd softdesk-support-api
    ```
-
-3. **Setup and activate the virtual environment:**
+3. Setup and activate the virtual environment:
    ```
    python -m venv env
-   source env/bin/activate  # Unix/MacOS
-   env\Scripts\activate  # Windows
+   # Unix/MacOS
+   source env/bin/activate
+   # Windows
+   env\Scripts\activate
    ```
-
-4. **Install the required dependencies:**
+4. Install the required dependencies:
    ```
    pip install -r requirements.txt
    ```
-
-5. **Apply database migrations:**
-   ```bash
+5. Apply database migrations:
+   ```
    python manage.py makemigrations
    python manage.py migrate
    ```
@@ -56,145 +49,114 @@ https://github.com/joluhan/Softdesk-API.git
 - Follows green code principles to minimize server request loads and optimize performance.
 
 ## Running the API
-
-1. **Launch the development server:**
-   ```
-   python manage.py runserver
-   ```
-
-2. **Access the API:** The API will be available at `http://127.0.0.1:8000/`.
+Launch the development server:
+```
+python manage.py runserver
+```
+Access the API at `http://127.0.0.1:8000/`.
 
 ## Creating a Superuser Account
+Generate a superuser account for backend administration:
+```
+python manage.py createsuperuser
+```
 
-- Generate a superuser account for backend administration:
-  ```
-  python manage.py createsuperuser
-  ```
+## Testing Instructions for SoftDesk Support API
 
+Ensure you have the following tools installed for testing:
 
-# Testing Instructions for SoftDesk Support API
+- Postman or any API testing tool
+- A local server running the SoftDesk Support API
 
-## User Endpoints
+### User Endpoints
 
-1. **User Signup:**
+1. User Signup:
    ```
    POST http://localhost:8000/user/signup/
    ```
-   Test: Submit user signup details and expect a confirmation message or token.
-
-2. **User Login:**
+2. User Login:
    ```
    POST http://localhost:8000/user/login/
    ```
-   Test: Submit user login credentials and expect a token in response.
+3. User Profile:
+   ```
+   GET http://localhost:8000/user/profile/
+   PUT http://localhost:8000/user/profile/
+   PATCH http://localhost:8000/user/profile/
+   DELETE http://localhost:8000/user/profile/
+   ```
 
-3. **User Profile:**
-   - GET `http://localhost:8000/user/profile/` to retrieve the user profile.
-   - PUT `http://localhost:8000/user/profile/` to update the user profile with full data.
-   - PATCH `http://localhost:8000/user/profile/` to partially update the user profile.
-   - DELETE `http://localhost:8000/user/profile/` to remove the user profile.
+### Project Endpoints
 
-## Project Endpoints
-
-1. **Create a Project:**
+1. Create a Project:
    ```
    POST http://localhost:8000/project/
    ```
-   Test: Submit new project details and expect a 201 status code for success.
-
-2. **List All Projects:**
+2. List All Projects:
    ```
    GET http://localhost:8000/project/
    ```
-   Test: Retrieve a list of all projects and expect a JSON list in response.
-
-3. **List a Specific Project:**
+3. List a Specific Project:
    ```
    GET http://localhost:8000/project/{id}/
    ```
-   Test: Retrieve details of a specific project using its ID.
-
-4. **Update a Specific Project:**
+4. Update a Specific Project:
    ```
    PUT http://localhost:8000/project/{id}/
    ```
-   Test: Submit updated project details for a specific project.
-
-5. **Delete a Specific Project:**
+5. Delete a Specific Project:
    ```
    DELETE http://localhost:8000/project/{id}/
    ```
-   Test: Remove a specific project using its ID.
-
-6. **Add a Contributor to a Project:**
+6. Add a Contributor to a Project:
    ```
    POST http://localhost:8000/project/{id}/add-contributor/
    ```
-   Test: Add a contributor to a project and expect a success confirmation.
-
-7. **Remove a Contributor from a Project:**
+7. Remove a Contributor from a Project:
    ```
    DELETE http://localhost:8000/project/{id}/remove-contributor/
    ```
-   Test: Remove a contributor from a project and expect a success confirmation.
-
-8. **Create an Issue within a Project:**
+8. Create an Issue within a Project:
    ```
    POST http://localhost:8000/project/{project_id}/create-issue/
    ```
-   Test: Add a new issue to a project and expect a 201 status code for success.
 
-## Issue Endpoints
+### Issue Endpoints
 
-1. **List a Specific Issue:**
-   ```
+1. List a Specific Issue:
+   ```http
    GET http://localhost:8000/issue/{issue_id}/
    ```
-   Test: Retrieve details of a specific issue.
-
-2. **Update a Specific Issue:**
-   ```
+2. Update a Specific Issue:
+   ```http
    PUT http://localhost:8000/issue/{issue_id}/
    ```
-   Test: Update details of a specific issue.
-
-3. **Partially Update a Specific Issue:**
-   ```
+3. Partially Update a Specific Issue:
+   ```http
    PATCH http://localhost:8000/issue/{issue_id}/
    ```
-   Test: Partially update details of a specific issue.
-
-4. **Delete a Specific Issue:**
-   ```
+4. Delete a Specific Issue:
+   ```http
    DELETE http://localhost:8000/issue/{issue_id}/
    ```
-   Test: Remove a specific issue using its ID.
 
-## Comment Endpoints
+### Comment Endpoints
 
-1. **List a Specific Comment:**
-   ```
+1. List a Specific Comment:
+   ```http
    GET http://localhost:8000/comment/{id}/
    ```
-   Test: Retrieve a specific comment using its ID.
-
-2. **Update a Specific Comment:**
-   ```
+2. Update a Specific Comment:
+   ```http
    PUT http://localhost:8000/comment/{id}/
    ```
-   Test: Update a specific comment using its ID.
-
-3. **Partially Update a Specific Comment:**
-   ```
+3. Partially Update a Specific Comment:
+   ```http
    PATCH http://localhost:8000/comment/{id}/
    ```
-   Test: Partially update a comment using its ID.
-
-4. **Delete a Specific Comment:**
-   ```
+4. Delete a Specific Comment:
+   ```http
    DELETE http://localhost:8000/comment/{id}/
    ```
-   Test: Remove a specific comment using its ID.
-
 
 - Replace `{id}`, `{issue_id}`, and `{project_id}` with actual numeric values corresponding to a project, issue, or comment.
