@@ -5,7 +5,8 @@
 [Testing Instructions](#testing-instructions-for-softdesk-support-api)
 
 ## Introduction
-The SoftDesk Support API is a RESTful service designed for SoftDesk, a collaborative software development company. This API facilitates issue tracking and project management for B2B interactions, ensuring efficient and secure technical support solutions.
+The SoftDesk Support API is a RESTful service designed for SoftDesk, a collaborative software development company. 
+This API facilitates issue tracking and project management for B2B interactions, ensuring efficient and secure technical support solutions.
 
 ## Features
 - User management with privacy and consent options.
