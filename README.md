@@ -33,7 +33,7 @@ The SoftDesk Support API is a RESTful service designed for SoftDesk, a collabora
    # Unix/MacOS
    source env/bin/activate
    # Windows
-   env\Scripts\activate
+   source env\Scripts\activate
    ```
 4. Install the required dependencies:
    ```
@@ -73,15 +73,15 @@ Ensure you have the following tools installed for testing:
 ### User Endpoints
 
 1. User Signup:
-   ```
+   ```http
    POST http://localhost:8000/user/signup/
    ```
 2. User Login:
-   ```
+   ```http
    POST http://localhost:8000/user/login/
    ```
 3. User Profile:
-   ```
+   ```http
    GET http://localhost:8000/user/profile/
    PUT http://localhost:8000/user/profile/
    PATCH http://localhost:8000/user/profile/
@@ -91,35 +91,35 @@ Ensure you have the following tools installed for testing:
 ### Project Endpoints
 
 1. Create a Project:
-   ```
+   ```http
    POST http://localhost:8000/project/
    ```
 2. List All Projects:
-   ```
+   ```http
    GET http://localhost:8000/project/
    ```
 3. List a Specific Project:
-   ```
+   ```http
    GET http://localhost:8000/project/{id}/
    ```
 4. Update a Specific Project:
-   ```
+   ```http
    PUT http://localhost:8000/project/{id}/
    ```
 5. Delete a Specific Project:
-   ```
+   ```http
    DELETE http://localhost:8000/project/{id}/
    ```
 6. Add a Contributor to a Project:
-   ```
+   ```http
    POST http://localhost:8000/project/{id}/add-contributor/
    ```
 7. Remove a Contributor from a Project:
-   ```
+   ```http
    DELETE http://localhost:8000/project/{id}/remove-contributor/
    ```
 8. Create an Issue within a Project:
-   ```
+   ```http
    POST http://localhost:8000/project/{project_id}/create-issue/
    ```
 
