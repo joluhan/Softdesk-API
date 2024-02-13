@@ -26,11 +26,13 @@ SECRET_KEY = 'django-insecure-e$-qba586-1m-z++*6$_%1!kx#4qd6hxl_$9m$6=)-i$hx5bp8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Define the allowed hosts for the Django project.
 ALLOWED_HOSTS = []
 
 
 # Application definition
 
+# List of all installed apps for the Django project.
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,25 +41,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'drf_yasg',
-    'rest_framework',
-    'rest_framework_simplejwt',
-    # 'rest_framework_simplejwt.token_blacklist',
-
-    'accounts',
-    'softdesk',
+    'drf_yasg',  # Django Rest Framework Yet Another Swagger Generator
+    'rest_framework',  # Django Rest Framework
+    'rest_framework_simplejwt',  # Django Rest Framework Simple JWT
+    # 'rest_framework_simplejwt.token_blacklist',  # Optional: Token Blacklisting
+    
+    'accounts',  # Custom app for user accounts
+    'softdesk',  # Main app for Softdesk functionality
 ]
 
-# DRF JWT Configuration
-# JWT_AUTH = {
-#     'JWT_ALLOW_REFRESH': True,
-#     'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=1),  # Définit la durée de validité du token(1h)
-#     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),  # Définit la durée de validité du refresh(7jours)
-#     'JWT_ALGORITHM': 'HS256',
-#     'JWT_VERIFY': True,
-#     'JWT_VERIFY_EXPIRATION': True,
-# }
-
+# Configuration for Django Rest Framework Simple JWT.
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1),
@@ -68,13 +61,15 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
+# Configuration for Django Rest Framework.
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',  # JWT authentication
+        # 'rest_framework.authentication.SessionAuthentication',  # Optional: Session Authentication
     ),
 }
 
+# List of middleware classes used by Django.
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -85,8 +80,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Root URL configuration for the Django project.
 ROOT_URLCONF = 'SoftdeskAPI.urls'
 
+# Configuration for Django templates.
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -103,12 +100,11 @@ TEMPLATES = [
     },
 ]
 
+# WSGI application for the Django project.
 WSGI_APPLICATION = 'SoftdeskAPI.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
+# Database configuration.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -116,12 +112,10 @@ DATABASES = {
     }
 }
 
-
+# Custom user model for authentication.
 AUTH_USER_MODEL = "accounts.User"
 
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-
+# Password validation settings.
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -137,25 +131,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
+# Internationalization settings.
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
+# Static files (CSS, JavaScript, Images) configuration.
 STATIC_URL = 'static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
+# Default primary key field type configuration.
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
