@@ -200,7 +200,12 @@ class IssueView(RetrieveUpdateDestroyAPIView):
         issue_id = self.kwargs.get('issue_id')
         try:
             issue = Issue.objects.get(id=issue_id)
-            return issue
+            if ProjectContributor.objects.filter(project=issue.project, contributor=self.request.user).exists():
+                return issue
+            else:
+                return Response({
+                    "message": "You are not a contributor to this project"
+                }, status=status.HTTP_403_FORBIDDEN)
         except Issue.DoesNotExist:
             return Response({"message": "Issue not found"}, status=status.HTTP_404_NOT_FOUND)
 
