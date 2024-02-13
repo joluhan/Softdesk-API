@@ -17,9 +17,3 @@ class IsCreator(permissions.BasePermission):
     # must be the creator of the element
     def has_object_permission(self, request, view, obj):
         return obj.creator == request.user
-
-
-class IsProjectCreator(permissions.BasePermission):
-    # must be the creator of the project
-    def has_object_permission(self, request, view, obj):
-        obj.project.creator == request.user or obj.issue.project.creator == request.user

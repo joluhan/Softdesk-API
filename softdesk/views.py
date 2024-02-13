@@ -184,9 +184,12 @@ class CreateIssueView(CreateAPIView):
 
             # Set the assigned_to field to the Contributor instance
             serializer.validated_data['assigned_to'] = contributor.contributor
-        serializer.save(creator=request.user, project=project)
+            serializer.save(creator=request.user, project=project)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response({
+            "message": "Issue must be assigned to a project contributor"
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class IssueView(RetrieveUpdateDestroyAPIView):
@@ -206,6 +209,7 @@ class IssueView(RetrieveUpdateDestroyAPIView):
                 return Response({
                     "message": "You are not a contributor to this project"
                 }, status=status.HTTP_403_FORBIDDEN)
+            
         except Issue.DoesNotExist:
             return Response({"message": "Issue not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -235,7 +239,7 @@ class IssueView(RetrieveUpdateDestroyAPIView):
         issue = self.get_object()
         project = issue.project  # get id du projet de l'Issue
 
-        if issue.creator == request.user or issue.project.creator == request.user:
+        if issue.creator == request.user:
             serializer = self.get_serializer(issue, data=request.data, partial=True)
             if serializer.is_valid():
                 assigned_to_username = request.data.get('assigned_to')
@@ -264,7 +268,7 @@ class IssueView(RetrieveUpdateDestroyAPIView):
                     else:
                         serializer.validated_data['assigned_to'] = None
                 serializer.save()
-                return Response(serializer.data)
+                return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response({
             "detail": "You do not have permission to update this issue!"
@@ -272,7 +276,7 @@ class IssueView(RetrieveUpdateDestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
         issue = self.get_object()
-        if issue.creator == request.user or issue.project.creator == request.user:
+        if issue.creator == request.user:
             issue.delete()
             return Response({"detail": "Issue successfully deleted"}, status=status.HTTP_204_NO_CONTENT)
         return Response({
@@ -293,12 +297,10 @@ class CreateCommentView(CreateAPIView):
         except Issue.DoesNotExist:
             return Response({"message": "Issue not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        # check if user is contributor to project issue
+        # check if user is contributor to project
         project = issue.project
-        contributor = ProjectContributor.objects.filter(project=project, contributor=user).first()
-
-        if contributor:
-            serializer.save(creator=contributor.contributor, issue=issue)
+        if ProjectContributor.objects.filter(project=project, contributor=user).exists():
+            serializer.save(creator=user, issue=issue)
         else:
             return Response({
                 "message": "You are not a contributor to this project and cannot create a comment"
@@ -307,35 +309,43 @@ class CreateCommentView(CreateAPIView):
 
 class CommentView(RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
+    lookup_field = 'id'
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated]
 
+
     def retrieve(self, request, *args, **kwargs):
         comment = self.get_object()
-        if comment.creator == request.user or comment.issue.project.creator == request.user:
+        # check if user is contributor to project
+        project = comment.issue.project
+        if ProjectContributor.objects.filter(project=project, contributor=self.request.user).exists():
             serializer = self.get_serializer(comment)
             return Response(serializer.data)
         else:
             return Response({
-                "detail": "You do not have permission to get this comment !"
+                "detail": "You do not have permission to view this comment !"
             }, status=status.HTTP_403_FORBIDDEN)
 
-    def perform_update(self, serializer):
+
+    def update(self, request, *args, **kwargs):
         comment = self.get_object()
-        if comment.creator == self.request.user or comment.issue.project.creator == self.request.user:
+        serializer = self.get_serializer(comment, data=request.data, partial=True)
+        if comment.creator == request.user:
             serializer.save()
-            return Response({"detail": "Comment successfully updated"}, status=status.HTTP_200_OK)
+            return Response({
+                "message": "Comment successfully updated"
+            }, status=status.HTTP_200_OK)
         else:
             return Response({
-                "detail": "You do not have permission to update this comment !"
+                "message": "You do not have permission to update this comment!"
             }, status=status.HTTP_403_FORBIDDEN)
 
     def destroy(self, request, *args, **kwargs):
         comment = self.get_object()
-        if comment.creator == request.user or comment.issue.project.creator == request.user:
+        if comment.creator == request.user:
             comment.delete()
-            return Response({"detail": "Comment successfully deleted"}, status=status.HTTP_204_NO_CONTENT)
+            return Response({"message": "Comment successfully deleted"}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({
-                "detail": "You do not have permission to delete this comment !"
+                "message": "You do not have permission to delete this comment !"
             }, status=status.HTTP_403_FORBIDDEN)

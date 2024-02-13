@@ -9,5 +9,5 @@ urlpatterns = [
     path('project/<int:project_id>/create-issue/', views.CreateIssueView.as_view(), name='create-issue'),
     path('issue/<int:issue_id>/', views.IssueView.as_view(), name='retrieve-update-delete-issue'),
     path('issue/<int:issue_id>/create-comment/', views.CreateCommentView.as_view(), name='comment-create'),
-    path('comment/<int:pk>/', views.CommentView.as_view(), name='retrieve-update-delete-comment'),
+    path('comment/<int:id>/', views.CommentView.as_view(), name='retrieve-update-delete-comment'),
 ]
