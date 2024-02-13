@@ -1,71 +1,60 @@
-from django.shortcuts import render
-from rest_framework.response import Response
-from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.decorators import api_view, permission_classes, action
-from rest_framework import status
-from drf_yasg.utils import swagger_auto_schema
-from rest_framework.viewsets import ReadOnlyModelViewSet
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from accounts.models import User
-from .models import Comment, Issue, Project, ProjectContributor
-from .paginations import CustomPagination
-from .permissions import IsContributor
-from .serializers import AddContributorSerializer, CommentSerializer, IssueListSerializer, IssueSerializer, ProjectDetailSerializer, ProjectListSerializer, ProjectSerializer, RemoveContributorSerializer
+from django.shortcuts import render  # Importing render function from django.shortcuts
+from rest_framework.response import Response  # Importing Response class from rest_framework.response
+from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView  # Importing CreateAPIView and RetrieveUpdateDestroyAPIView from rest_framework.generics
+from rest_framework.decorators import api_view, permission_classes, action  # Importing api_view, permission_classes, and action decorators
+from rest_framework import status  # Importing status module from rest_framework
+from drf_yasg.utils import swagger_auto_schema  # Importing swagger_auto_schema function from drf_yasg.utils
+from rest_framework.viewsets import ReadOnlyModelViewSet  # Importing ReadOnlyModelViewSet from rest_framework.viewsets
+from rest_framework.permissions import IsAuthenticated  # Importing IsAuthenticated permission class from rest_framework.permissions
+from accounts.models import User  # Importing User model from accounts app
+from .models import Comment, Issue, Project, ProjectContributor  # Importing models from the current directory
+from .paginations import CustomPagination  # Importing CustomPagination class from paginations module
+from .permissions import IsContributor  # Importing IsContributor permission class from permissions module
+from .serializers import AddContributorSerializer, CommentSerializer, IssueListSerializer, IssueSerializer, ProjectDetailSerializer, ProjectListSerializer, ProjectSerializer, RemoveContributorSerializer  # Importing serializers from the current directory
 
 # Create your views here.
 
+# View mixin for custom project list view
 class CustomListProjectsViewMixin:
-    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
+    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])  # Decorator for creating a new project
     def create(self, request):
-        serializer = ProjectSerializer(data=request.data)
-        if serializer.is_valid():
-            project = serializer.save(creator=request.user)
-            ProjectContributor.objects.create(project=project, contributor=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = ProjectSerializer(data=request.data)  # Serializing the request data
+        if serializer.is_valid():  # Checking if the serializer data is valid
+            project = serializer.save(creator=request.user)  # Saving the project with the current user as creator
+            ProjectContributor.objects.create(project=project, contributor=request.user)  # Adding the current user as contributor to the project
+            return Response(serializer.data, status=status.HTTP_201_CREATED)  # Returning successful response with created project data
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # Returning error response with serializer errors
 
-
-@permission_classes([IsAuthenticated])
+# View for listing projects with permissions applied
+@permission_classes([IsAuthenticated])  # Applying IsAuthenticated permission to the view
 class ListProjectsView(CustomListProjectsViewMixin, ReadOnlyModelViewSet):
-    queryset = Project.objects.all()
-    serializer_class = ProjectListSerializer
-    pagination_class = CustomPagination
+    queryset = Project.objects.all()  # Queryset for retrieving all projects
+    serializer_class = ProjectListSerializer  # Serializer class for serializing projects
+    pagination_class = CustomPagination  # Pagination class for paginating project list
 
-
-@swagger_auto_schema(methods=['POST'], request_body=AddContributorSerializer)
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
+# Endpoint for adding a contributor to a project
+@swagger_auto_schema(methods=['POST'], request_body=AddContributorSerializer)  # Adding swagger documentation for the endpoint
+@api_view(['POST'])  # Specifying the HTTP methods allowed for this endpoint
+@permission_classes([IsAuthenticated])  # Applying IsAuthenticated permission to the endpoint
 def add_contributor(request, id):
     try:
-        project = Project.objects.get(id=id)
+        project = Project.objects.get(id=id)  # Retrieving the project with the given id
     except Project.DoesNotExist:
-        return Response({
-            "message": "Project does not exist"
-        }, status=status.HTTP_404_NOT_FOUND)
-    
-    if project.creator == request.user:
+        return Response({"message": "Project does not exist"}, status=status.HTTP_404_NOT_FOUND)  # Returning error response if project does not exist
+
+    if project.creator == request.user:  # Checking if the current user is the creator of the project
         try:
-            contributor = User.objects.get(username=request.data['username'])
+            contributor = User.objects.get(username=request.data['username'])  # Retrieving the user to be added as a contributor
         except User.DoesNotExist:
-            return Response({
-                "message": "user not found"
-            }, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)  # Returning error response if user not found
 
         if ProjectContributor.objects.filter(project=project, contributor=contributor).exists():
-            return Response({
-                "message": f"{contributor} is already a contributor to this project"
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": f"{contributor} is already a contributor to this project"}, status=status.HTTP_400_BAD_REQUEST)  # Returning error response if user is already a contributor
 
-        ProjectContributor.objects.create(project=project, contributor=contributor)
-        return Response({
-            "message": f"{contributor} added as a contributor to this project successfully"
-        }, status=status.HTTP_201_CREATED)
-    
-    return Response({
-            "detail": "You do not have permission to add contributors to this project!"
-        }, status=status.HTTP_403_FORBIDDEN)
+        ProjectContributor.objects.create(project=project, contributor=contributor)  # Adding the user as a contributor to the project
+        return Response({"message": f"{contributor} added as a contributor to this project successfully"}, status=status.HTTP_201_CREATED)  # Returning success response if user added successfully
 
+    return Response({"detail": "You do not have permission to add contributors to this project!"}, status=status.HTTP_403_FORBIDDEN)  # Returning error response if user does not have permission
 
 @swagger_auto_schema(methods=['DELETE'], request_body=RemoveContributorSerializer)
 @api_view(['DELETE'])
